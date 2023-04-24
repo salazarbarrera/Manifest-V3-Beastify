@@ -1,14 +1,15 @@
 {
-  "description": "Adds a browser action icon to the toolbar. Click the button to choose a beast. The active tab's body content is then replaced with a picture of the chosen beast. See https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Examples#beastify",
+  "description": "Adds a browser action icon to the toolbar following Manifest V3. Click the button to choose a beast. The active tab's body content is then replaced with a picture of the chosen beast. See https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Examples#beastify and https://developer.chrome.com/docs/extensions/migrating/",
   "manifest_version": 3,
-  "name": "Beastify",
+  "name": "Beastify MV3",
   "version": "1.0",
-  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/beastify",
+  "homepage_url": "https://github.com/salazarbarrera/Manifest-V3-Beastify",
   "icons": {
     "48": "icons/beasts-48.png"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
   "web_accessible_resources": [
     {
@@ -31,6 +32,5 @@
     ],
     "default_title": "Beastify",
     "default_popup": "popup/choose_beast.html"
-  },
-  "content_security_policy": {}
+  }
 }
