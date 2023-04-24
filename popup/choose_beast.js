@@ -33,7 +33,7 @@ function listenForClicks() {
      * send a "beastify" message to the content script in the active tab.
      */
     function beastify(tabs) {
-      browser.tabs.insertCSS({code: hidePage}).then(() => {
+      browser.scripting.insertCSS({target: {tabId: tabs[0].id}, css: hidePage}).then(() => {
         const url = beastNameToURL(e.target.textContent);
         browser.tabs.sendMessage(tabs[0].id, {
           command: "beastify",
@@ -47,7 +47,7 @@ function listenForClicks() {
      * send a "reset" message to the content script in the active tab.
      */
     function reset(tabs) {
-      browser.tabs.removeCSS({code: hidePage}).then(() => {
+      browser.scripting.removeCSS({target: {tabId: tabs[0].id}, css: hidePage}).then(() => {
         browser.tabs.sendMessage(tabs[0].id, {
           command: "reset",
         });
@@ -96,6 +96,13 @@ function reportExecuteScriptError(error) {
  * and add a click handler.
  * If we couldn't inject the script, handle the error.
  */
-browser.tabs.executeScript({file: "/content_scripts/beastify.js"})
-.then(listenForClicks)
-.catch(reportExecuteScriptError);
+
+const promise = (browser.tabs.query({active: true, currentWindow: true}));
+promise.then(tabs => {
+  let tabId = tabs[0].id;
+  browser.scripting.executeScript({
+    target: {tabId: tabId, allFrames: true},
+    files: ['/content_scripts/beastify.js'],
+  }).then(listenForClicks)
+  .catch(reportExecuteScriptError);
+});
