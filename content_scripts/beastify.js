@@ -37,7 +37,7 @@
    * Listen for messages from the background script.
    * Call "beastify()" or "reset()".
    */
-  browser.runtime.onMessage.addListener((message) => {
+  chrome.runtime.onMessage.addListener((message) => {
     if (message.command === "beastify") {
       insertBeast(message.beastURL);
     } else if (message.command === "reset") {

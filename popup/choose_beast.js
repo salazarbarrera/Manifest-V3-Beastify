@@ -19,11 +19,11 @@ function listenForClicks() {
     function beastNameToURL(beastName) {
       switch (beastName) {
         case "Frog":
-          return browser.runtime.getURL("beasts/frog.jpg");
+          return chrome.runtime.getURL("beasts/frog.jpg");
         case "Snake":
-          return browser.runtime.getURL("beasts/snake.jpg");
+          return chrome.runtime.getURL("beasts/snake.jpg");
         case "Turtle":
-          return browser.runtime.getURL("beasts/turtle.jpg");
+          return chrome.runtime.getURL("beasts/turtle.jpg");
       }
     }
 
@@ -33,9 +33,9 @@ function listenForClicks() {
      * send a "beastify" message to the content script in the active tab.
      */
     function beastify(tabs) {
-      browser.scripting.insertCSS({target: {tabId: tabs[0].id}, css: hidePage}).then(() => {
+      chrome.scripting.insertCSS({target: {tabId: tabs[0].id}, css: hidePage}).then(() => {
         const url = beastNameToURL(e.target.textContent);
-        browser.tabs.sendMessage(tabs[0].id, {
+        chrome.tabs.sendMessage(tabs[0].id, {
           command: "beastify",
           beastURL: url
         });
@@ -47,8 +47,8 @@ function listenForClicks() {
      * send a "reset" message to the content script in the active tab.
      */
     function reset(tabs) {
-      browser.scripting.removeCSS({target: {tabId: tabs[0].id}, css: hidePage}).then(() => {
-        browser.tabs.sendMessage(tabs[0].id, {
+      chrome.scripting.removeCSS({target: {tabId: tabs[0].id}, css: hidePage}).then(() => {
+        chrome.tabs.sendMessage(tabs[0].id, {
           command: "reset",
         });
       });
@@ -70,11 +70,11 @@ function listenForClicks() {
       return;
     } 
     if (e.target.type === "reset") {
-      browser.tabs.query({active: true, currentWindow: true})
+      chrome.tabs.query({active: true, currentWindow: true})
         .then(reset)
         .catch(reportError);
     } else {
-      browser.tabs.query({active: true, currentWindow: true})
+      chrome.tabs.query({active: true, currentWindow: true})
         .then(beastify)
         .catch(reportError);
     }
@@ -97,10 +97,10 @@ function reportExecuteScriptError(error) {
  * If we couldn't inject the script, handle the error.
  */
 
-const promise = (browser.tabs.query({active: true, currentWindow: true}));
+const promise = (chrome.tabs.query({active: true, currentWindow: true}));
 promise.then(tabs => {
   let tabId = tabs[0].id;
-  browser.scripting.executeScript({
+  chrome.scripting.executeScript({
     target: {tabId: tabId, allFrames: true},
     files: ['/content_scripts/beastify.js'],
   }).then(listenForClicks)
